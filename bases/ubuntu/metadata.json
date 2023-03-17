@@ -1,9 +1,10 @@
 {
-    "images": [
-        {
-            "name": "ubuntu",
-            "path": "bases/ubuntu",
-            "version": "jammy"
-        }
+    "name": "ubuntu",
+    "versions": [
+        "jammy"
+    ],
+    "platforms": [
+        "linux/amd64",
+        "linux/arm64"
     ]
 }

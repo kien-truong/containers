@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "bases/ubuntu"
+      - "bases/ubuntu/**"
 
 jobs:
   read-metadata:
@@ -14,20 +14,25 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Read bases/ubuntu
-        id: meta
-        uses: juliangruber/read-file-action@v1
-        with:
-          path: bases/ubuntu/metadata.json
-
-      - name: Set output
+      - name: Read metadata
         shell: bash
-        run: echo "${{ steps.meta.outputs.content }}" >> $GITHUB_OUTPUT
+        run: |
+          NAME=$(jq ".name" bases/ubuntu/metadata.json)
+          echo "NAME=${NAME}" >> $GITHUB_OUTPUT
+
+          PLATFORMS=$(jq ".platforms" bases/ubuntu/metadata.json)
+          echo "PLATFORMS=${PLATFORMS}" >> $GITHUB_OUTPUT
+
+          VERSIONS=$(jq ".versions" bases/ubuntu/metadata.json)
+          echo "VERSIONS=${VERSIONS}" >> $GITHUB_OUTPUT
 
   images-build:
     needs:
       - read-metadata
     uses: kien-truong/containers/.github/workflows/build-image.yml@main
     with:
-      images: "${{ needs.read-metadata.outputs }}"
+      name: "${{ needs.read-metadata.outputs.NAME }}"
+      versions: "${{ needs.read-metadata.outputs.VERSIONS }}"
+      platforms: "${{ needs.read-metadata.outputs.PLATFORMS }}"
+      path: "bases/ubuntu/Dockerfile"
     secrets: inherit

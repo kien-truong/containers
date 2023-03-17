@@ -3,22 +3,30 @@ name: build-image
 on:
   workflow_call:
     inputs:
-      images:
+      path:
         required: true
         type: string
-        description: |-
-          Pass a json string with the images and channels to build. e.g.:
-            [
-              {
-                "name": "ubuntu",
-                "path": "bases/ubuntu"
-                "version": "jammy"
-              }
-            ]
+        description: |
+          Path to the Dockerfile
+      name:
+        required: true
+        type: string
+        description: |
+          Name of the image to build
+      versions:
+        required: true
+        type: string
+        description: |
+          Json string with the list of the version to build
+      platforms:
+        required: true
+        type: string
+        description: |
+          Json string with the list of the platform to build
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BASE_NAME: ${{ github.repository_owner }}
+  BASE_NAME: ${{ github.repository_owner }}
 
 jobs:
   build-and-push:
@@ -26,7 +34,7 @@ jobs:
     if: inputs.images != '' && inputs.images != '[]'
     strategy:
       matrix:
-        image: ["${{ fromJson(inputs.images) }}"]
+        version: ["${{ fromJson(inputs.versions) }}"]
       fail-fast: true
     steps:
       - name: Checkout
@@ -51,18 +59,18 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE_NAME }}/${{ matrix.image.name }}
+          images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ inputs.name }}
           tags: |
-            type=raw,value=${{ matrix.image.version }}
+            type=raw,value=${{ matrix.version }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ${{ matrix.image.path }}/Dockerfile
+          file: ${{ inputs.path }}
           build-args: |
-            VERSION=${{ matrix.image.version }}
+            VERSION=${{ matrix.version }}
           push: true
-          platforms: linux/amd64
+          platforms: "${{ fromJson(inputs.platforms) }}"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
