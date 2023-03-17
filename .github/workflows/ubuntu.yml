@@ -35,7 +35,7 @@ jobs:
     uses: kien-truong/containers/.github/workflows/build-image.yml@main
     with:
       name: "${{ needs.read-metadata.outputs.NAME }}"
-      versions: "${{ needs.read-metadata.outputs.VERSIONS }}"
-      platforms: "${{ needs.read-metadata.outputs.PLATFORMS }}"
+      versions: "${{ fromJSON(needs.read-metadata.outputs.VERSIONS) }}"
+      platforms: "${{ fromJSON(needs.read-metadata.outputs.PLATFORMS) }}"
       path: "bases/ubuntu/Dockerfile"
     secrets: inherit
