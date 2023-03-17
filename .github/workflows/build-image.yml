@@ -34,7 +34,7 @@ jobs:
     strategy:
       matrix:
         version: ["${{ fromJson(inputs.versions) }}"]
-      fail-fast: true
+      fail-fast: false
     steps:
       - name: Checkout
         uses: actions/checkout@v3
