@@ -28,7 +28,7 @@ jobs:
           NAME=$(jq -r -c ".name" bases/ubuntu/metadata.json)
           echo "name=${NAME}" >> $GITHUB_OUTPUT
 
-          PLATFORMS=$(jq -r -c ".platforms" bases/ubuntu/metadata.json)
+          PLATFORMS=$(jq -c '.platforms | join(",")' bases/ubuntu/metadata.json)
           echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
 
           VERSIONS=$(jq -r -c ".versions" bases/ubuntu/metadata.json)

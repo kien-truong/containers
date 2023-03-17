@@ -22,7 +22,7 @@ on:
         required: true
         type: string
         description: |
-          Json string with the list of the platform to build
+          Csv string with the list of the platform to build
 
 env:
   REGISTRY: ghcr.io
