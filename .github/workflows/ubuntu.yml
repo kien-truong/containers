@@ -11,6 +11,10 @@ on:
 jobs:
   read-metadata:
     runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.meta.outputs.name }}
+      versions: ${{ steps.meta.outputs.versions }}
+      platforms: ${{ steps.meta.outputs.platforms }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
@@ -18,24 +22,25 @@ jobs:
           fetch-depth: 1
 
       - name: Read metadata
+        id: meta
         shell: bash
         run: |
           NAME=$(jq -r -c ".name" bases/ubuntu/metadata.json)
-          echo "NAME=${NAME@Q}" >> $GITHUB_OUTPUT
+          echo "name=${NAME@Q}" >> $GITHUB_OUTPUT
 
           PLATFORMS=$(jq -r -c ".platforms" bases/ubuntu/metadata.json)
-          echo "PLATFORMS=${PLATFORMS@Q}" >> $GITHUB_OUTPUT
+          echo "platforms=${PLATFORMS@Q}" >> $GITHUB_OUTPUT
 
           VERSIONS=$(jq -r -c ".versions" bases/ubuntu/metadata.json)
-          echo "VERSIONS=${VERSIONS@Q}" >> $GITHUB_OUTPUT
+          echo "versions=${VERSIONS@Q}" >> $GITHUB_OUTPUT
 
   images-build:
     needs:
       - read-metadata
     uses: kien-truong/containers/.github/workflows/build-image.yml@main
     with:
-      name: "${{ needs.read-metadata.outputs.NAME }}"
-      versions: "${{ needs.read-metadata.outputs.VERSIONS }}"
-      platforms: "${{ needs.read-metadata.outputs.PLATFORMS }}"
+      name: "${{ needs.read-metadata.outputs.name }}"
+      versions: "${{ needs.read-metadata.outputs.versions }}"
+      platforms: "${{ needs.read-metadata.outputs.platforms }}"
       path: "bases/ubuntu/Dockerfile"
     secrets: inherit
