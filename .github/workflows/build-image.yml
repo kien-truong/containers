@@ -41,7 +41,7 @@ jobs:
           echo "${{ inputs.versions }}"
           echo "${{ inputs.path }}"
           echo "${{ inputs.name }}"
-          echo "${{ (inputs.platforms }}"
+          echo "${{ inputs.platforms }}"
       # - name: Checkout
       #   uses: actions/checkout@v3
       #   with:
