@@ -1,11 +1,11 @@
-name: ubuntu-base
+name: ubuntu
 
 on:
   push:
     branches:
       - main
     paths:
-      - ".github/workflows/ubuntu.yml"
+      - ".github/workflows/**"
       - "bases/ubuntu/**"
 
 jobs:

@@ -31,7 +31,6 @@ env:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
-    if: inputs.images != '' && inputs.images != '[]'
     strategy:
       matrix:
         version: ["${{ fromJson(inputs.versions) }}"]
