@@ -26,21 +26,21 @@ jobs:
         shell: bash
         run: |
           NAME=$(jq -r -c ".name" bases/ubuntu/metadata.json)
-          echo "name=${NAME@Q}" >> $GITHUB_OUTPUT
+          echo "name=${NAME}" >> $GITHUB_OUTPUT
 
           PLATFORMS=$(jq -r -c ".platforms" bases/ubuntu/metadata.json)
-          echo "platforms=${PLATFORMS@Q}" >> $GITHUB_OUTPUT
+          echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
 
           VERSIONS=$(jq -r -c ".versions" bases/ubuntu/metadata.json)
-          echo "versions=${VERSIONS@Q}" >> $GITHUB_OUTPUT
+          echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
 
   images-build:
     needs:
       - read-metadata
     uses: kien-truong/containers/.github/workflows/build-image.yml@main
     with:
-      name: "${{ needs.read-metadata.outputs.name }}"
-      versions: "${{ needs.read-metadata.outputs.versions }}"
-      platforms: "${{ needs.read-metadata.outputs.platforms }}"
-      path: "bases/ubuntu/Dockerfile"
+      name: ${{ needs.read-metadata.outputs.name }}
+      versions: ${{ needs.read-metadata.outputs.versions }}
+      platforms: ${{ needs.read-metadata.outputs.platforms }}
+      path: bases/ubuntu/Dockerfile
     secrets: inherit
