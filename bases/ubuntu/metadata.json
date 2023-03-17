@@ -1,0 +1,9 @@
+{
+    "images": [
+        {
+            "name": "ubuntu",
+            "path": "bases/ubuntu",
+            "version": "jammy"
+        }
+    ]
+}

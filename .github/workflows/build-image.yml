@@ -1,20 +1,38 @@
 name: build-image
 
 on:
-  push:
-    branches:
-      - 'main'
+  workflow_call:
+    inputs:
+      images:
+        required: true
+        type: string
+        description: |-
+          Pass a json string with the images and channels to build. e.g.:
+            [
+              {
+                "name": "ubuntu",
+                "path": "bases/ubuntu"
+                "version": "jammy"
+              }
+            ]
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/ubuntu
+  IMAGE_BASE_NAME: ${{ github.repository_owner }}
 
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    if: inputs.images != '' && inputs.images != '[]'
+    strategy:
+      matrix:
+        image: ["${{ fromJson(inputs.images) }}"]
+      fail-fast: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -33,15 +51,17 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_BASE_NAME }}/${{ matrix.image.name }}
           tags: |
-            type=raw,value=jammy
+            type=raw,value=${{ matrix.image.version }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: bases/ubuntu/Dockerfile
+          file: ${{ matrix.image.path }}/Dockerfile
+          build-args: |
+            VERSION=${{ matrix.image.version }}
           push: true
           platforms: linux/amd64
           tags: ${{ steps.meta.outputs.tags }}

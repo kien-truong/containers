@@ -1,0 +1,33 @@
+name: ubuntu-base
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "bases/ubuntu"
+
+jobs:
+  read-metadata:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Read bases/ubuntu
+        id: meta
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: bases/ubuntu/metadata.json
+
+      - name: Set output
+        shell: bash
+        run: echo "${{ steps.meta.outputs.content }}" >> $GITHUB_OUTPUT
+
+  images-build:
+    needs:
+      - read-metadata
+    uses: kien-truong/containers/.github/workflows/build-image.yml@main
+    with:
+      images: "${{ needs.read-metadata.outputs }}"
+    secrets: inherit
