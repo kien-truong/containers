@@ -32,7 +32,7 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=schedule,pattern={{date 'YYYYMMDD'}}
+            type=edge,enable=true,priority=700,prefix=jammy,suffix=,branch=$repo.default_branch
 
       - name: Build and push
         uses: docker/build-push-action@v4
