@@ -17,14 +17,14 @@ jobs:
       - name: Read metadata
         shell: bash
         run: |
-          NAME=$(jq ".name" bases/ubuntu/metadata.json)
-          echo "NAME=${NAME}" >> $GITHUB_OUTPUT
+          NAME=$(jq -r -c ".name" bases/ubuntu/metadata.json)
+          echo "NAME=${NAME@Q}" >> $GITHUB_OUTPUT
 
-          PLATFORMS=$(jq ".platforms" bases/ubuntu/metadata.json)
-          echo "PLATFORMS=${PLATFORMS}" >> $GITHUB_OUTPUT
+          PLATFORMS=$(jq -r -c ".platforms" bases/ubuntu/metadata.json)
+          echo "PLATFORMS=${PLATFORMS@Q}" >> $GITHUB_OUTPUT
 
-          VERSIONS=$(jq ".versions" bases/ubuntu/metadata.json)
-          echo "VERSIONS=${VERSIONS}" >> $GITHUB_OUTPUT
+          VERSIONS=$(jq -r -c ".versions" bases/ubuntu/metadata.json)
+          echo "VERSIONS=${VERSIONS@Q}" >> $GITHUB_OUTPUT
 
   images-build:
     needs:
