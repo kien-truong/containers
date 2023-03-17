@@ -1,6 +1,7 @@
 {
     "name": "ubuntu",
     "versions": [
+        "focal",
         "jammy"
     ],
     "platforms": [
