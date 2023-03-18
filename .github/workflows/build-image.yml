@@ -27,6 +27,7 @@ on:
 env:
   REGISTRY: ghcr.io
   BASE_NAME: ${{ github.repository_owner }}
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
 
 jobs:
   build-and-push:
