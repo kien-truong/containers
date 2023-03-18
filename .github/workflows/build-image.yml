@@ -67,7 +67,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ inputs.name }}
           tags: |
             type=raw,value=${{ matrix.version }}
-            type=raw,value=${{ matrix.version }}-{{ inputs.revision }}
+            type=raw,value=${{ matrix.version }}-${{ inputs.revision }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
