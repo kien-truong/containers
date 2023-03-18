@@ -26,10 +26,16 @@ WORKDIR /tmp/transmission
 # Compile transmission
 ARG VERSION
 RUN git clone --depth 1 -b ${VERSION} https://github.com/transmission/transmission.git . && \
-  git submodule update --init --recursive && \
-  cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DENABLE_GTK=OFF -DENABLE_QT=OFF -DENABLE_UTILS=OFF -DENABLE_CLI=OFF && \
-  cmake --build build && \
-  cmake --install build
+    git submodule update --init --recursive && \
+    cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
+        -DENABLE_GTK=OFF \
+        -DENABLE_QT=OFF \
+        -DENABLE_UTILS=OFF \
+        -DENABLE_CLI=OFF \
+        -DENABLE_TESTS=OFF \
+        -DINSTALL_DOC=OFF && \
+    cmake --build build && \
+    cmake --install build
 
 FROM ghcr.io/kien-truong/ubuntu:jammy
 
