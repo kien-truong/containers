@@ -28,6 +28,11 @@ on:
         type: string
         description: |
           A revision number to append to the image version.
+      schedule:
+        required: false
+        type: string
+        description: |
+          Will be the schedule if this action is called through a schedule
 
 env:
   REGISTRY: ghcr.io
@@ -69,6 +74,11 @@ jobs:
             type=raw,value=${{ matrix.version }}
             type=raw,value=${{ matrix.version }}-${{ inputs.revision }}
 
+      - name: Set image refresh flag for later
+        if: inputs.schedule == ''
+        run: |
+          echo "IMAGE_REFRESH=true" >> $GITHUB_ENV
+
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
@@ -83,3 +93,5 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          pull: ${{ env.IMAGE_REFRESH }}
+          no-cache: ${{ env.IMAGE_REFRESH }}

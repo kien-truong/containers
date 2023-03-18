@@ -8,6 +8,11 @@ on:
         type: string
         description: |
           Path to the app folder
+      schedule:
+        required: false
+        type: string
+        description: |
+          Will be the schedule if this action is called through a schedule
 
 jobs:
   read-metadata:
@@ -49,4 +54,5 @@ jobs:
       platforms: ${{ needs.read-metadata.outputs.platforms }}
       revision: ${{ needs.read-metadata.outputs.revision }}
       path: ${{ inputs.path }}/Dockerfile
+      schedule: ${{ inputs.schedule }}
     secrets: inherit
