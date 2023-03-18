@@ -7,11 +7,6 @@ ARG BUILDPLATFORM
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
-LABEL \
-  org.opencontainers.image.base.name="ghcr.io/kien-truong/ubuntu" \
-  org.opencontainers.image.base.version="${VERSION}" \
-  org.opencontainers.image.authors="Kien Truong <duckientruong@gmail.com>"
-
 ENV \
     DEBCONF_NONINTERACTIVE_SEEN=true \
     DEBIAN_FRONTEND="noninteractive" \
@@ -71,4 +66,12 @@ COPY bases/ubuntu/scripts /tmp/scripts
 RUN set -eux && \
     chmod +x /tmp/scripts/fetch_envsubst.sh && \
     /tmp/scripts/fetch_envsubst.sh ${ENVSUBST_VERSION} && \
+    chmod +x /usr/local/bin/envsubst && \
     rm -rf /tmp/*
+
+LABEL \
+    org.opencontainers.image.title="Ubuntu Jammy" \
+    org.opencontainers.image.version="${VERSION}" \
+    org.opencontainers.image.authors="Kien Truong <duckientruong@gmail.com>" \
+    org.opencontainers.image.base.name="public.ecr.aws/lts/ubuntu" \
+    org.opencontainers.image.base.version="${VERSION}"
