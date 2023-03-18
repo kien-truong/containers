@@ -6,8 +6,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/**"
-      - "apps/transmission/**"
+      - "apps/transmission/revision.json"
 
 jobs:
   images-build:

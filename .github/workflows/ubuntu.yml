@@ -6,8 +6,7 @@ on:
     branches:
       - main
     paths:
-      - ".github/workflows/**"
-      - "bases/ubuntu/**"
+      - "bases/ubuntu/revision.json"
 
 jobs:
   images-build:

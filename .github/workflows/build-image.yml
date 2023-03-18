@@ -23,6 +23,11 @@ on:
         type: string
         description: |
           Csv string with the list of the platform to build
+      revision:
+        required: true
+        type: string
+        description: |
+          A revision number to append to the image version.
 
 env:
   REGISTRY: ghcr.io
@@ -62,6 +67,7 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ inputs.name }}
           tags: |
             type=raw,value=${{ matrix.version }}
+            type=raw,value=${{ matrix.version }}-{{ inputs.revision }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
