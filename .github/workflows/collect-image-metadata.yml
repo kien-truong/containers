@@ -16,7 +16,7 @@ jobs:
       name: ${{ steps.meta.outputs.name }}
       versions: ${{ steps.meta.outputs.versions }}
       platforms: ${{ steps.meta.outputs.platforms }}
-      revision: ${{ steps.meta.outputs.platforms.revision }}
+      revision: ${{ steps.meta.outputs.revision }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
