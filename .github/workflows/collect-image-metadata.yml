@@ -47,6 +47,6 @@ jobs:
       name: ${{ needs.read-metadata.outputs.name }}
       versions: ${{ needs.read-metadata.outputs.versions }}
       platforms: ${{ needs.read-metadata.outputs.platforms }}
-      revision: ${{ needs.read-metadata.revision }}
+      revision: ${{ needs.read-metadata.outputs.revision }}
       path: ${{ inputs.path }}/Dockerfile
     secrets: inherit
