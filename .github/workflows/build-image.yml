@@ -70,6 +70,7 @@ jobs:
           file: ${{ inputs.path }}
           build-args: |
             VERSION=${{ matrix.version }}
+          provenance: false
           push: true
           platforms: "${{ fromJson(inputs.platforms) }}"
           tags: ${{ steps.meta.outputs.tags }}
