@@ -1,4 +1,7 @@
-FROM ghcr.io/kien-truong/ubuntu:jammy as builder
+ARG BASE_IMAGE=ghcr.io/kien-truong/ubuntu
+ARG BASE_VERSION=jammy-2
+
+FROM ${BASE_IMAGE}:${BASE_VERSION} as builder
 
 ARG TARGETPLATFORM
 ARG BUILDPLATFORM
@@ -37,7 +40,7 @@ RUN git clone --depth 1 -b ${VERSION} https://github.com/transmission/transmissi
     cmake --build build && \
     cmake --install build
 
-FROM ghcr.io/kien-truong/ubuntu:jammy
+FROM ${BASE_IMAGE}:${BASE_VERSION}
 
 ARG TARGETPLATFORM
 
@@ -90,5 +93,5 @@ LABEL \
     org.opencontainers.image.source="https://github.com/transmission/transmission" \
     org.opencontainers.image.version="${VERSION}" \
     org.opencontainers.image.authors="Kien Truong <duckientruong@gmail.com>" \
-    org.opencontainers.image.base.name="ghcr.io/kien-truong/ubuntu" \
-    org.opencontainers.image.base.version="jammy"
+    org.opencontainers.image.base.name="${BASE_IMAGE}" \
+    org.opencontainers.image.base.version="${BASE_VERSION}"

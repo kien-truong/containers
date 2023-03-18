@@ -2,14 +2,9 @@
 
 set -euxo pipefail
 
-# Update settings.json with environment variables if the file does not exists
-FILE=/config/settings.json
-if [[ -f "$FILE" ]]; then
-    echo "$FILE exists, environment variables will not be used"
-else
-    echo "Creating configuration file from environment variables"
-    /usr/local/bin/envsubst < /app/settings.json.tmpl > /config/settings.json
-fi
+# Overwriting settings.json with environment variables
+echo "Creating configuration file from environment variables"
+/usr/local/bin/envsubst < /app/settings.json.tmpl > /config/settings.json
 
 echo "Transmission starting with the following configuration..."
 cat /config/settings.json
