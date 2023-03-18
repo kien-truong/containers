@@ -38,6 +38,7 @@ env:
   REGISTRY: ghcr.io
   BASE_NAME: ${{ github.repository_owner }}
   BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+  IMAGE_REFRESH: false
 
 jobs:
   build-and-push:
@@ -47,6 +48,11 @@ jobs:
         version: ["${{ fromJson(inputs.versions) }}"]
       fail-fast: false
     steps:
+      - name: Set image refresh flag for later
+        if: inputs.schedule != ''
+        run: |
+          echo "IMAGE_REFRESH=true" >> $GITHUB_ENV
+
       - name: Checkout
         uses: actions/checkout@v3
         with:
@@ -73,11 +79,7 @@ jobs:
           tags: |
             type=raw,value=${{ matrix.version }}
             type=raw,value=${{ matrix.version }}-${{ inputs.revision }}
-
-      - name: Set image refresh flag for later
-        if: inputs.schedule == ''
-        run: |
-          echo "IMAGE_REFRESH=true" >> $GITHUB_ENV
+            type=raw,value=${{ matrix.version }}-${{ inputs.revision }}-{{date 'YYYYMMDD'}}
 
       - name: Build and push
         uses: docker/build-push-action@v4
