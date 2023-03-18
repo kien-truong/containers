@@ -1,4 +1,4 @@
-name: ubuntu
+name: transmission
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - main
     paths:
       - ".github/workflows/**"
-      - "bases/ubuntu/**"
+      - "apps/transmission/**"
 
 jobs:
   images-build:
     uses: kien-truong/containers/.github/workflows/collect-image-metadata.yml@main
     with:
-      path: bases/ubuntu
+      path: apps/transmission
     secrets: inherit

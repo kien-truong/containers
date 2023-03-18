@@ -1,0 +1,10 @@
+{
+    "name": "transmission",
+    "versions": [
+        "4.0.2"
+    ],
+    "platforms": [
+        "linux/amd64",
+        "linux/arm64"
+    ]
+}

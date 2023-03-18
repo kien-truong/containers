@@ -1,0 +1,47 @@
+name: collect-image-metadata
+
+on:
+  workflow_call:
+    inputs:
+      path:
+        required: true
+        type: string
+        description: |
+          Path to the app folder
+
+jobs:
+  read-metadata:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.meta.outputs.name }}
+      versions: ${{ steps.meta.outputs.versions }}
+      platforms: ${{ steps.meta.outputs.platforms }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Read metadata
+        id: meta
+        shell: bash
+        run: |
+          NAME=$(jq -r -c ".name" ${{ inputs.path }}/metadata.json)
+          echo "name=${NAME}" >> $GITHUB_OUTPUT
+
+          PLATFORMS=$(jq -c '.platforms | join(",")' ${{ inputs.path }}/metadata.json)
+          echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
+
+          VERSIONS=$(jq -r -c ".versions" ${{ inputs.path }}/metadata.json)
+          echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
+
+  images-build:
+    needs:
+      - read-metadata
+    uses: kien-truong/containers/.github/workflows/build-image.yml@main
+    with:
+      name: ${{ needs.read-metadata.outputs.name }}
+      versions: ${{ needs.read-metadata.outputs.versions }}
+      platforms: ${{ needs.read-metadata.outputs.platforms }}
+      path: ${{ inputs.path }}/Dockerfile
+    secrets: inherit
