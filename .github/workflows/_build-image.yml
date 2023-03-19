@@ -59,10 +59,10 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: markdown
+          format: html
           message: |
-            🎬 *Start building container images* 🎬
-            _Application\:_ `${{ needs.read-metadata.outputs.name }}`
+            🎬 <b>Start building container images</b> 🎬
+            <i>Application:</i> <code>${{ needs.read-metadata.outputs.name }}</code>
 
   build-and-push:
     runs-on: ubuntu-latest
@@ -135,7 +135,7 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: markdown
+          format: html
           message: |
-            🏁 *Finish building container images* 🏁
-            _Application\:_ `${{ needs.read-metadata.outputs.name }}`
+            🏁 <b>Finish building container images</b> 🏁
+            <i>Application:</i> <code>${{ needs.read-metadata.outputs.name }}</code>
