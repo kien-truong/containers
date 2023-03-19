@@ -59,7 +59,11 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          args: Start rebuilding container image for ${{ needs.read-metadata.outputs.name }}
+          format: markdown
+          message: |
+            🎬🎬🎬
+            Start rebuilding container image for: *${{ needs.read-metadata.outputs.name }}*
+            🎬🎬🎬
 
   build-and-push:
     runs-on: ubuntu-latest
@@ -132,4 +136,8 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          args: New container image for ${{ needs.read-metadata.outputs.name }} has been built.
+          format: markdown
+          message: |
+            ⭐⭐⭐
+            New container images has been built for: *${{ needs.read-metadata.outputs.name }}*
+            ⭐⭐⭐
