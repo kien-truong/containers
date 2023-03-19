@@ -11,8 +11,8 @@ on:
       - "bases/ubuntu/revision.json"
 
 jobs:
-  images-build:
-    uses: .github/workflows/_build-image.yml
+  build-image:
+    uses: ./.github/workflows/_build-image.yml
     with:
       path: bases/ubuntu
       schedule: ${{ github.event.schedule }}

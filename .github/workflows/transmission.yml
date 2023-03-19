@@ -12,7 +12,7 @@ on:
 
 jobs:
   images-build:
-    uses: .github/workflows/_build-image.yml
+    uses: ./.github/workflows/_build-image.yml
     with:
       path: apps/transmission
       schedule: ${{ github.event.schedule }}
