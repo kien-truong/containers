@@ -12,7 +12,7 @@ on:
 
 jobs:
   images-build:
-    uses: kien-truong/containers/.github/workflows/collect-image-metadata.yml@main
+    uses: .github/workflows/_build-image.yml
     with:
       path: bases/ubuntu
       schedule: ${{ github.event.schedule }}

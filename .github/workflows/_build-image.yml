@@ -7,32 +7,12 @@ on:
         required: true
         type: string
         description: |
-          Path to the Dockerfile
-      name:
-        required: true
-        type: string
-        description: |
-          Name of the image to build
-      versions:
-        required: true
-        type: string
-        description: |
-          Json string with the list of the version to build
-      platforms:
-        required: true
-        type: string
-        description: |
-          Csv string with the list of the platform to build
-      revision:
-        required: true
-        type: string
-        description: |
-          A revision number to append to the image version.
+          Path to the base or app folder
       schedule:
         required: false
         type: string
         description: |
-          Will be the schedule if this action is called through a schedule
+          Will contain the schedule if this action is called by a scheduler
 
 env:
   REGISTRY: ghcr.io
@@ -41,11 +21,41 @@ env:
   IMAGE_REFRESH: false
 
 jobs:
+  read-metadata:
+    runs-on: ubuntu-latest
+    outputs:
+      name: ${{ steps.meta.outputs.name }}
+      versions: ${{ steps.meta.outputs.versions }}
+      platforms: ${{ steps.meta.outputs.platforms }}
+      revision: ${{ steps.meta.outputs.revision }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 1
+
+      - name: Read metadata
+        id: meta
+        shell: bash
+        run: |
+          NAME=$(jq -r -c ".name" ${{ inputs.path }}/metadata.json)
+          echo "name=${NAME}" >> $GITHUB_OUTPUT
+
+          PLATFORMS=$(jq -c '.platforms | join(",")' ${{ inputs.path }}/metadata.json)
+          echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
+
+          VERSIONS=$(jq -r -c ".versions" ${{ inputs.path }}/metadata.json)
+          echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
+
+          REVISION=$(jq -r -c ".revision" ${{ inputs.path }}/revision.json)
+          echo "revision=${REVISION}" >> $GITHUB_OUTPUT
+
   build-and-push:
     runs-on: ubuntu-latest
+    needs: read-metadata
     strategy:
       matrix:
-        version: ["${{ fromJson(inputs.versions) }}"]
+        version: ["${{ fromJson(needs.read-metadata.outputs.versions) }}"]
       fail-fast: false
     steps:
       - name: Set image refresh flag for later
@@ -75,22 +85,22 @@ jobs:
         id: meta
         uses: docker/metadata-action@v4
         with:
-          images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ inputs.name }}
+          images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ needs.read-metadata.outputs.name }}
           tags: |
             type=raw,value=${{ matrix.version }}
-            type=raw,value=${{ matrix.version }}-${{ inputs.revision }}
-            type=raw,value=${{ matrix.version }}-${{ inputs.revision }}-{{date 'YYYYMMDD'}}
+            type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}
+            type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}
 
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ${{ inputs.path }}
+          file: ${{ needs.read-metadata.outputs.path }}
           build-args: |
             VERSION=${{ matrix.version }}
           provenance: false
           push: true
-          platforms: "${{ fromJson(inputs.platforms) }}"
+          platforms: "${{ fromJson(needs.read-metadata.outputs.platforms) }}"
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
