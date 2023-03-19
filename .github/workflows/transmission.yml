@@ -11,7 +11,7 @@ on:
       - "apps/transmission/revision.json"
 
 jobs:
-  images-build:
+  build-image:
     uses: ./.github/workflows/_build-image.yml
     with:
       path: apps/transmission
