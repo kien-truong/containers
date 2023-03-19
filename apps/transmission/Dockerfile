@@ -16,12 +16,7 @@ RUN set -eux && \
         cmake \
         ninja-build \
         python3 \
-        libtool \
-        pkg-config \
-        intltool \
         libcurl4-openssl-dev \
-        libevent-dev \
-        libminiupnpc-dev \
         libssl-dev
 
 WORKDIR /tmp/transmission
@@ -58,11 +53,7 @@ RUN set -eux && \
     apt-get -qq update && \
     apt-get install -y \
         libcurl4 \
-        libevent-2.1-7 \
-        libminiupnpc17 \
-        libnatpmp1 \
-        libssl3 \
-        zlib1g && \
+        libssl3 && \
     apt-get autoremove -y && \
     apt-get clean && \
     rm -rf \
@@ -87,6 +78,8 @@ RUN chmod -R +r /app && \
 
 USER app-user
 
+ARG BASE_IMAGE
+ARG BASE_VERSION
 ARG VERSION
 LABEL \
     org.opencontainers.image.title="Transmission Bittorrent Client" \
