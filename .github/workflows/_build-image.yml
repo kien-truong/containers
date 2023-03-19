@@ -95,7 +95,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          file: ${{ needs.read-metadata.outputs.path }}
+          file: ${{ inputs.path }}/Dockerfile
           build-args: |
             VERSION=${{ matrix.version }}
           provenance: false
