@@ -62,7 +62,7 @@ jobs:
           format: markdown
           message: |
             🎬🎬🎬
-            Start rebuilding container image for: *${{ needs.read-metadata.outputs.name }}*
+            Start building container images: *${{ needs.read-metadata.outputs.name }}*
             🎬🎬🎬
 
   build-and-push:
@@ -125,7 +125,7 @@ jobs:
           pull: ${{ env.IMAGE_REFRESH }}
           no-cache: ${{ env.IMAGE_REFRESH }}
 
-  notify-complete-build:
+  notify-finish-build:
     runs-on: ubuntu-latest
     needs:
       - read-metadata
@@ -139,5 +139,5 @@ jobs:
           format: markdown
           message: |
             ⭐⭐⭐
-            New container images has been built for: *${{ needs.read-metadata.outputs.name }}*
+            Finish building container images: *${{ needs.read-metadata.outputs.name }}*
             ⭐⭐⭐
