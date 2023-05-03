@@ -61,7 +61,7 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: html
           message: |
-            🎬 <b>Start building container images</b> 🎬
+            🎬 <b>Start building container image</b> 🎬
             <i>Application:</i> <code>${{ needs.read-metadata.outputs.name }}</code>
 
   build-and-push:
@@ -137,5 +137,5 @@ jobs:
           token: ${{ secrets.TELEGRAM_TOKEN }}
           format: html
           message: |
-            🏁 <b>Finish building container images</b> 🏁
+            🏁 <b>Build finished</b> 🏁
             <i>Application:</i> <code>${{ needs.read-metadata.outputs.name }}</code>
