@@ -22,7 +22,7 @@ RUN set -eux && \
 WORKDIR /tmp/transmission
 
 # Compile transmission
-ARG VERSION
+ARG VERSION=4.0.4
 RUN git clone --depth 1 -b ${VERSION} https://github.com/transmission/transmission.git . && \
     git submodule update --init --recursive && \
     cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
