@@ -44,7 +44,8 @@ CMD ["/app/entrypoint.sh"]
 ENV HOME=/config \
     XDG_CONFIG_HOME=/config \
     XDG_DATA_HOME=/config \
-    WEBUI_PORT=9091 \
+    TRANSMISSION_WEBUI_PORT=9091 \
+    TRANSMISSION_PEER_PORT=51413 \
     TRANSMISSION_WEB_HOME=/app/public_html
 
 USER root
@@ -65,7 +66,7 @@ RUN set -eux && \
     chmod -R u=rwX,go=rX /downloads && \
     printf "umask %d" "${UMASK}" >> /etc/bash.bashrc
 
-EXPOSE ${WEBUI_PORT} 51413
+EXPOSE ${TRANSMISSION_WEBUI_PORT} ${TRANSMISSION_PEER_PORT}
 
 VOLUME ["/downloads", "/watch"]
 

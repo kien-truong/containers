@@ -10,4 +10,4 @@ echo "Transmission starting with the following configuration..."
 cat /config/settings.json
 
 # shellcheck disable=SC2086
-exec /app/transmission-daemon --foreground --config-dir /config --port "${WEBUI_PORT}" ${EXTRA_ARGS:-}
+exec /app/transmission-daemon --foreground --config-dir /config --port "${TRANSMISSION_WEBUI_PORT}" ${TRANSMISSION_EXTRA_ARGS:-}
