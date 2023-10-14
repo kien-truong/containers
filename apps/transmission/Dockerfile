@@ -68,7 +68,7 @@ RUN set -eux && \
 
 EXPOSE ${TRANSMISSION_WEBUI_PORT} ${TRANSMISSION_PEER_PORT}
 
-VOLUME ["/downloads", "/watch"]
+VOLUME ["/downloads", "/watch", "/config"]
 
 COPY --from=builder /usr/local/bin/transmission-daemon /app/transmission-daemon
 COPY --from=builder /usr/local/share/transmission/public_html /app/public_html
