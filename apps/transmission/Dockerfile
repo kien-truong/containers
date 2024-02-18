@@ -1,5 +1,5 @@
 ARG BASE_IMAGE=ghcr.io/kien-truong/ubuntu
-ARG BASE_VERSION=jammy-2
+ARG BASE_VERSION=jammy
 
 FROM ${BASE_IMAGE}:${BASE_VERSION} as builder
 
@@ -22,7 +22,7 @@ RUN set -eux && \
 WORKDIR /tmp/transmission
 
 # Compile transmission
-ARG VERSION=4.0.4
+ARG VERSION=4.0.5
 RUN git clone --depth 1 -b ${VERSION} https://github.com/transmission/transmission.git . && \
     git submodule update --init --recursive && \
     cmake -B build -G Ninja -DCMAKE_BUILD_TYPE=Release \
