@@ -8,11 +8,11 @@ on:
         type: string
         description: |
           Path to the base or app folder
-      schedule:
+      image-refresh:
         required: false
         type: string
         description: |
-          Will contain the schedule if this action is called by a scheduler
+          Will force a rebuild
 
 env:
   REGISTRY: ghcr.io
@@ -75,7 +75,7 @@ jobs:
       fail-fast: false
     steps:
     - name: Set image refresh flag for later
-      if: inputs.schedule != ''
+      if: inputs.image-refresh != ''
       run: |
         echo "IMAGE_REFRESH=true" >> $GITHUB_ENV
 

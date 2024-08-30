@@ -16,5 +16,5 @@ jobs:
     uses: ./.github/workflows/_build-image.yml
     with:
       path: bases/ubuntu
-      schedule: ${{ github.event.schedule }}
+      image-refresh: ${{ github.event_name == 'schedule' }}
     secrets: inherit
