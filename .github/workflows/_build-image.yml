@@ -63,6 +63,7 @@ jobs:
         message: |
           🎬 <b>Start building container image</b> 🎬
           <i>Application:</i> <code>${{ needs.read-metadata.outputs.name }}</code>
+          Url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
   build-and-push:
     runs-on: ubuntu-latest
@@ -139,3 +140,4 @@ jobs:
         message: |
           🏁 <b>Build finished</b> 🏁
           <i>Application:</i> <code>${{ needs.read-metadata.outputs.name }}</code>
+          Url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
