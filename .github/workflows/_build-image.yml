@@ -41,7 +41,7 @@ jobs:
         NAME=$(jq -r -c ".name" ${{ inputs.path }}/metadata.json)
         echo "name=${NAME}" >> $GITHUB_OUTPUT
 
-        PLATFORMS=$(jq -c '.platforms' ${{ inputs.path }}/metadata.json)
+        PLATFORMS=$(jq -r -c ".platforms" ${{ inputs.path }}/metadata.json)
         echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
 
         VERSIONS=$(jq -r -c ".versions" ${{ inputs.path }}/metadata.json)
