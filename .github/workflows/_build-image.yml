@@ -106,9 +106,9 @@ jobs:
         labels:
           org.opencontainers.image.title=${{ needs.read-metadata.outputs.name }}
         tags: |
-          type=raw,value=${{ matrix.version }}
-          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}
-          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ matrix.version }}-${{ matrix.platform.arch }}
+          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}-${{ matrix.platform.arch }}
+          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}-${{ matrix.platform.arch }}
 
     - name: Build and push
       uses: docker/build-push-action@v6
