@@ -114,19 +114,19 @@ jobs:
       uses: docker/build-push-action@v6
       with:
         context: .
-        file: ${{ inputs.path }}/Dockerfile
+        file: "${{ inputs.path }}/Dockerfile"
         build-args: |
-          VERSION=${{ matrix.version }}
+          VERSION="${{ matrix.version }}"
         provenance: false
         push: true
         platforms: "${{ matrix.platform.name }}"
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        annotations: ${{ steps.meta.outputs.annotations }}
+        tags: "${{ steps.meta.outputs.tags }}"
+        labels: "${{ steps.meta.outputs.labels }}"
+        annotations: "${{ steps.meta.outputs.annotations }}"
         cache-from: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.name }}"
         cache-to: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.name }}",mode=max
-        pull: ${{ env.IMAGE_REFRESH }}
-        no-cache: ${{ env.IMAGE_REFRESH }}
+        pull: "${{ env.IMAGE_REFRESH }}"
+        no-cache: "${{ env.IMAGE_REFRESH }}"
 
   notify-finish-build:
     runs-on: ubuntu-24.04
