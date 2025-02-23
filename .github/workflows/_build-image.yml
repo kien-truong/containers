@@ -39,16 +39,16 @@ jobs:
       shell: bash
       run: |
         NAME=$(jq -r -c ".name" ${{ inputs.path }}/metadata.json)
-        echo "name=${NAME}" >> $GITHUB_OUTPUT
+        echo "name=${NAME}" | tee -a "$GITHUB_OUTPUT"
 
         PLATFORMS=$(jq -r -c ".platforms" ${{ inputs.path }}/metadata.json)
-        echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
+        echo "platforms=${PLATFORMS}" | tee -a "$GITHUB_OUTPUT"
 
         VERSIONS=$(jq -r -c ".versions" ${{ inputs.path }}/metadata.json)
-        echo "versions=${VERSIONS}" >> $GITHUB_OUTPUT
+        echo "versions=${VERSIONS}" | tee -a "$GITHUB_OUTPUT"
 
         REVISION=$(jq -r -c ".revision" ${{ inputs.path }}/revision.json)
-        echo "revision=${REVISION}" >> $GITHUB_OUTPUT
+        echo "revision=${REVISION}" >> "$GITHUB_OUTPUT"
 
   notify-start-build:
     runs-on: ubuntu-24.04
