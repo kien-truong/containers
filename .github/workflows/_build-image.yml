@@ -123,7 +123,7 @@ jobs:
         tags: "${{ steps.meta.outputs.tags }}"
         labels: "${{ steps.meta.outputs.labels }}"
         annotations: "${{ steps.meta.outputs.annotations }}"
-        cache-from: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.arch }}"
+        # cache-from: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.arch }}"
         cache-to: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.arch }}",mode=max
         pull: "${{ env.IMAGE_REFRESH }}"
         no-cache: "${{ env.IMAGE_REFRESH }}"
