@@ -1,4 +1,4 @@
-ARG VERSION=jammy
+ARG VERSION=24.04
 
 FROM public.ecr.aws/lts/ubuntu:${VERSION}
 
@@ -18,16 +18,14 @@ USER root
 
 # Create common app-user for our images
 RUN groupadd --gid 10000 app-user && \
-    adduser app-user \
+    useradd app-user \
         --uid 10000 \
         --gid 10000 \
-        --system \
-        --disabled-password \
-        --no-create-home \
-    && \
-    mkdir -p /app /config && \
-    chown -R app-user:app-user /app /config && \
-    chmod -R 775 /app /config
+        --create-home \
+        --home-dir /app && \
+    mkdir -p /config && \
+    chown -R app-user:app-user /config && \
+    chmod -R 775 /config
 
 WORKDIR /app
 
@@ -57,7 +55,7 @@ RUN set -eux && \
         /var/cache/apt/* \
         /var/tmp/*
 
-ENV LANG en_US.UTF-8
+ENV LANG=en_US.UTF-8
 
 VOLUME ["/config"]
 
@@ -70,7 +68,7 @@ RUN set -eux && \
     rm -rf /tmp/*
 
 LABEL \
-    org.opencontainers.image.title="Ubuntu Jammy" \
+    org.opencontainers.image.title="Ubuntu" \
     org.opencontainers.image.version="${VERSION}" \
     org.opencontainers.image.authors="Kien Truong <duckientruong@gmail.com>" \
     org.opencontainers.image.base.name="public.ecr.aws/lts/ubuntu" \

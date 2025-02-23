@@ -1,7 +1,7 @@
 {
     "name": "ubuntu",
     "versions": [
-        "jammy"
+        "24.04"
     ],
     "platforms": [
         "linux/amd64",
