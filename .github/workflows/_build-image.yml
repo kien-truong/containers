@@ -101,6 +101,10 @@ jobs:
       uses: docker/metadata-action@v5
       with:
         images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ needs.read-metadata.outputs.name }}
+        annotations:
+          org.opencontainers.image.title=${{ needs.read-metadata.outputs.name }}
+        labels:
+          org.opencontainers.image.title=${{ needs.read-metadata.outputs.name }}
         tags: |
           type=raw,value=${{ matrix.version }}
           type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}
@@ -118,7 +122,8 @@ jobs:
         platforms: "${{ matrix.platform.name }}"
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
-        cache-from: type=gha
+        annotations: ${{ steps.meta.outputs.annotations }}
+        cache-from: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.name }}"
         cache-to: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.name }}",mode=max
         pull: ${{ env.IMAGE_REFRESH }}
         no-cache: ${{ env.IMAGE_REFRESH }}
