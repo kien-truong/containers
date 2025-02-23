@@ -72,7 +72,7 @@ jobs:
           - version: ["${{ fromJson(needs.read-metadata.outputs.versions) }}"]
           - platform: ["${{ fromJson(needs.read-metadata.outputs.platforms) }}"]
       fail-fast: false
-    runs-on: "${{ matrix.build.platform.runner }}"
+    runs-on: "ubuntu-latest"
     needs:
     - read-metadata
     - notify-start-build
