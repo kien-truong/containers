@@ -2,11 +2,11 @@ name: transmission
 
 on:
   workflow_dispatch:
-  workflow_run:
-    workflows:
-      - ubuntu
-    types:
-      - completed
+  # workflow_run:
+  #   workflows:
+  #     - ubuntu
+  #   types:
+  #     - completed
   push:
     branches:
       - main
