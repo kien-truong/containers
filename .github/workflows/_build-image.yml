@@ -55,7 +55,7 @@ jobs:
     needs: read-metadata
     steps:
     - name: Send start build notification
-      uses: appleboy/telegram-action@v1
+      uses: appleboy/telegram-action@v1.0.1
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -131,7 +131,7 @@ jobs:
     - build-and-push
     steps:
     - name: send custom message with args
-      uses: appleboy/telegram-action@v1
+      uses: appleboy/telegram-action@v1.0.1
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
