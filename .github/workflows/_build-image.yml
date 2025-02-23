@@ -116,7 +116,7 @@ jobs:
         context: .
         file: "${{ inputs.path }}/Dockerfile"
         build-args: |
-          VERSION="${{ matrix.version }}"
+          VERSION=${{ matrix.version }}
         provenance: false
         push: true
         platforms: "${{ matrix.platform.name }}"
