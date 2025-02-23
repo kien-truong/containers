@@ -68,11 +68,10 @@ jobs:
   build-and-push:
     strategy:
       matrix:
-        build:
-          - version: ["${{ fromJson(needs.read-metadata.outputs.versions) }}"]
-          - platform: ["${{ fromJson(needs.read-metadata.outputs.platforms) }}"]
+        version: ["${{ fromJson(needs.read-metadata.outputs.versions) }}"]
+        platform: ["${{ fromJson(needs.read-metadata.outputs.platforms) }}"]
       fail-fast: false
-    runs-on: "ubuntu-latest"
+    runs-on: "${{ matrix.platform.runner }}"
     needs:
     - read-metadata
     - notify-start-build
@@ -103,9 +102,9 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ needs.read-metadata.outputs.name }}
         tags: |
-          type=raw,value=${{ matrix.build.version }}
-          type=raw,value=${{ matrix.build.version }}-${{ needs.read-metadata.outputs.revision }}
-          type=raw,value=${{ matrix.build.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ matrix.version }}
+          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}
+          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}
 
     - name: Build and push
       uses: docker/build-push-action@v6
@@ -113,14 +112,14 @@ jobs:
         context: .
         file: ${{ inputs.path }}/Dockerfile
         build-args: |
-          VERSION=${{ matrix.build.version }}
+          VERSION=${{ matrix.version }}
         provenance: false
         push: true
-        platforms: "${{ matrix.build.platform.name }}"
+        platforms: "${{ matrix.platform.name }}"
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
-        cache-to: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.build.version }}-${{ matrix.build.platform.name }}",mode=max
+        cache-to: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.version }}-${{ matrix.platform.name }}",mode=max
         pull: ${{ env.IMAGE_REFRESH }}
         no-cache: ${{ env.IMAGE_REFRESH }}
 
