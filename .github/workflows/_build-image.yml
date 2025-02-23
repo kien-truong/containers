@@ -22,7 +22,7 @@ env:
 
 jobs:
   read-metadata:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       name: ${{ steps.meta.outputs.name }}
       versions: ${{ steps.meta.outputs.versions }}
@@ -41,7 +41,7 @@ jobs:
         NAME=$(jq -r -c ".name" ${{ inputs.path }}/metadata.json)
         echo "name=${NAME}" >> $GITHUB_OUTPUT
 
-        PLATFORMS=$(jq -c '.platforms | join(",")' ${{ inputs.path }}/metadata.json)
+        PLATFORMS=$(jq -c '.platforms' ${{ inputs.path }}/metadata.json)
         echo "platforms=${PLATFORMS}" >> $GITHUB_OUTPUT
 
         VERSIONS=$(jq -r -c ".versions" ${{ inputs.path }}/metadata.json)
@@ -51,11 +51,11 @@ jobs:
         echo "revision=${REVISION}" >> $GITHUB_OUTPUT
 
   notify-start-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: read-metadata
     steps:
     - name: Send start build notification
-      uses: appleboy/telegram-action@v0.1.1
+      uses: appleboy/telegram-action@v1
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -66,14 +66,16 @@ jobs:
           Url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
   build-and-push:
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        build:
+          - version: ["${{ fromJson(needs.read-metadata.outputs.versions) }}"]
+          - platform: ["${{ fromJson(needs.read-metadata.outputs.platforms) }}"]
+      fail-fast: false
+    runs-on: "${{ matrix.build.platform.runner }}"
     needs:
     - read-metadata
     - notify-start-build
-    strategy:
-      matrix:
-        version: ["${{ fromJson(needs.read-metadata.outputs.versions) }}"]
-      fail-fast: false
     steps:
     - name: Set image refresh flag for later
       if: inputs.image-refresh != ''
@@ -84,9 +86,6 @@ jobs:
       uses: actions/checkout@v4
       with:
         fetch-depth: 1
-
-    - name: Set up QEMU
-      uses: docker/setup-qemu-action@v3
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
@@ -104,35 +103,35 @@ jobs:
       with:
         images: ${{ env.REGISTRY }}/${{ env.BASE_NAME }}/${{ needs.read-metadata.outputs.name }}
         tags: |
-          type=raw,value=${{ matrix.version }}
-          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}
-          type=raw,value=${{ matrix.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}
+          type=raw,value=${{ matrix.build.version }}
+          type=raw,value=${{ matrix.build.version }}-${{ needs.read-metadata.outputs.revision }}
+          type=raw,value=${{ matrix.build.version }}-${{ needs.read-metadata.outputs.revision }}-{{date 'YYYYMMDD'}}
 
     - name: Build and push
-      uses: docker/build-push-action@v5
+      uses: docker/build-push-action@v6
       with:
         context: .
         file: ${{ inputs.path }}/Dockerfile
         build-args: |
-          VERSION=${{ matrix.version }}
+          VERSION=${{ matrix.build.version }}
         provenance: false
         push: true
-        platforms: "${{ fromJson(needs.read-metadata.outputs.platforms) }}"
+        platforms: "${{ matrix.build.platform.name }}"
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-to: type=gha,scope="${{ needs.read-metadata.outputs.name }}-${{ matrix.build.version }}-${{ matrix.build.platform.name }}",mode=max
         pull: ${{ env.IMAGE_REFRESH }}
         no-cache: ${{ env.IMAGE_REFRESH }}
 
   notify-finish-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs:
     - read-metadata
     - build-and-push
     steps:
     - name: send custom message with args
-      uses: appleboy/telegram-action@v0.1.1
+      uses: appleboy/telegram-action@v1
       with:
         to: ${{ secrets.TELEGRAM_TO }}
         token: ${{ secrets.TELEGRAM_TOKEN }}
