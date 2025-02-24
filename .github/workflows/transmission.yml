@@ -2,6 +2,9 @@ name: transmission
 
 on:
   workflow_dispatch:
+    inputs:
+      image-refresh:
+        type: boolean
   workflow_run:
     workflows:
       - ubuntu
@@ -19,5 +22,5 @@ jobs:
     uses: ./.github/workflows/_build-image.yml
     with:
       path: apps/transmission
-      image-refresh: ${{ github.event_name == 'workflow_run' }}
+      image-refresh: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.image-refresh)}}
     secrets: inherit

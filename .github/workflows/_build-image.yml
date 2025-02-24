@@ -10,7 +10,7 @@ on:
           Path to the base or app folder
       image-refresh:
         required: false
-        type: string
+        type: boolean
         description: |
           Will force a rebuild
 
@@ -77,7 +77,7 @@ jobs:
     - notify-start-build
     steps:
     - name: Set image refresh flag for later
-      if: inputs.image-refresh != ''
+      if: inputs.image-refresh
       run: |
         echo "IMAGE_REFRESH=true" >> $GITHUB_ENV
 
