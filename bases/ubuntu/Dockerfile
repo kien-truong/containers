@@ -25,7 +25,7 @@ RUN groupadd --gid 10000 app-user && \
         --home-dir /app && \
     mkdir -p /config && \
     chown -R app-user:app-user /config && \
-    chmod -R 775 /config
+    chmod -R 775 /app /config
 
 WORKDIR /app
 
